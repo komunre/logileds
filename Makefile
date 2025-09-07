@@ -2,7 +2,7 @@ CXX=g++
 CXX_STANDARD=c++20
 CXX_FLAGS=-Wall -Wextra -pedantic -Weffc++ -Wconversion -Wsign-conversion
 CXX_DEBUG=-g
-LIBS=-lhidapi-hidraw -lhidapi-libusb -lrt
+LIBS=-lhidapi-hidraw -lhidapi-libusb
 INCLUDE=-I/usr/include/hidapi -I./include
 
 OBJ=src/main.o src/hid.o src/outgauge.o
