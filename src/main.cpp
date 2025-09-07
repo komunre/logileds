@@ -5,6 +5,8 @@
 #include "hid.h"
 #include "outgauge.h"
 
+#define MAX_RPM 7000
+
 int main()
 {
     if (!open_wheel_hid())
@@ -19,7 +21,7 @@ int main()
     {
         Outgauge_t* data = receive_data();
 
-        static float max_rpm = 6000;
+        static float max_rpm = MAX_RPM;
         float percent = data->rpm / max_rpm;
         if (percent < 0.20)
         {
