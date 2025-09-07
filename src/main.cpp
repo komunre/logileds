@@ -14,40 +14,6 @@ int main()
 
     change_state(LED_NONE);
 
-#if 0
-    int silly {};
-    while (silly != 10)
-    {
-        std::cin >> silly;
-        unsigned char led_state = LED_NONE;
-        switch (silly)
-        {
-            case 0:
-                led_state = LED_NONE;
-                break;
-            case 1:
-                led_state = LED_ONE;
-                break;
-            case 2:
-                led_state = LED_TWO;
-                break;
-            case 3:
-                led_state = LED_THREE;
-                break;
-            case 4:
-                led_state = LED_FOUR;
-                break;
-            case 5:
-                led_state = LED_FIVE;
-                break;
-            default:
-                led_state = LED_NONE;
-                break;
-        }
-        change_state(led_state);
-    }
-#endif
-
     open_socket();
     while (true)
     {
