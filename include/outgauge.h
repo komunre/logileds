@@ -3,6 +3,7 @@
 #ifndef OUTGAUGE_H
 #define OUTGAUGE_H
 
+// Outgauge server port
 #define OG_PORT 4444
 
 // (C) Vulcan-dev 2023 MIT License

@@ -8,23 +8,25 @@
 #include <poll.h>
 #include "outgauge.h"
 
+// Server socket
 static int g_socket;
+// Outgauge protocol datagram size
 static constexpr std::size_t buffer_length = sizeof(unsigned int) * 3 
         + sizeof(char) * 5 
         + sizeof(unsigned short)
         + sizeof(float) * 10
         + sizeof(int);
+// Outgauge datagram storage
 static char buf[buffer_length];
 
 void open_socket()
 {
-    // AF_INET specified we want IPv4 things.
+    // AF_INET specifies we want IPv4 things.
     //  SOCK_DGRAM (UDP)
     //          Supports datagrams (connectionless, unreliable messages of
     //          a fixed maximum length). That means UDP.
 
     // In other words, this is UDP socket.
-    // We create it.
     int s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (s == -1)
     {
@@ -50,6 +52,7 @@ Outgauge_t* receive_data()
 {
     struct pollfd pfd {};
     pfd.fd = g_socket;
+    // Specify which events wait for
     pfd.events = POLLIN;
 
     // Wait for g_socket to receive data
@@ -60,6 +63,7 @@ Outgauge_t* receive_data()
         return NULL;
     }
 
+    // Abort if event is not an incoming data (somehow)
     if ((pfd.revents & POLLIN) == 0)
     {
         std::cout << "Some socket event, but no data to read\n";
@@ -73,6 +77,8 @@ Outgauge_t* receive_data()
     if ((recv_len = recvfrom(g_socket, buf, buffer_length, 0, (struct sockaddr*)&si_other, &slen)) == -1)
     {
         std::cerr << "Error reading socket.\n";
+        // Attempt to reopen server socket, assuming server socket has failed
+        close(g_socket);
         open_socket();
     }
 

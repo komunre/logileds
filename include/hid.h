@@ -10,6 +10,7 @@
 #define LED_FOUR 15
 #define LED_FIVE 31
 
+// The response HID sends upon success
 #define LED_SUCCESS 7
 
 bool open_wheel_hid();

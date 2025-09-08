@@ -17,6 +17,7 @@ void handle_sigint(int)
 
 int main()
 {
+    // Set SIGINT handler for graceful exit
     struct sigaction sigint_handler;
     sigint_handler.sa_handler = handle_sigint;
     if (sigemptyset(&sigint_handler.sa_mask) != 0)
@@ -30,17 +31,27 @@ int main()
         std::cerr << "Failed to set SIGINT handler\n";
     }
 
+    // Wheel stuff starts here
     if (!open_wheel_hid())
     {
         return 1;
     }
 
+    // Reset LED state.
+    // Technically does nothing, since change_state 
+    // by default assumes LED_NONE to be current state
+    // and ignores an attempt to send it again
     change_state(LED_NONE);
 
+    // Open UPD server socket
     open_socket();
+    // Update loop
     while (g_keep_running)
     {
+        // Attempt to receive data from the socket
         Outgauge_t* data = receive_data();
+        // avoid messing with invalid/unhcanged data
+        // if receive ended in timeout or error
         if (data == NULL)
         {
             continue;
@@ -74,8 +85,11 @@ int main()
         }
     }
 
+    // Graceful exit
+
     std::cout << "Exitting...\n";
 
+    // Not sending this signal could leave LEDs turned on
     change_state(LED_NONE);
 
     end_led_control();
