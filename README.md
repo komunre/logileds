@@ -3,6 +3,9 @@ Any game that supports OutGauge protocol (for example, BeamNG.drive) will be abl
 
 In other words, G29 LEDs are now on linux natively!
 
+# License
+Licensed under LGPL-2.1 unless otherwise specified (outgauge.h:8-64 MIT)
+
 # Dependencies
 [hidapi](https://github.com/libusb/hidapi)
 
