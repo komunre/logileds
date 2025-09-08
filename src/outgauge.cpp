@@ -5,6 +5,7 @@
 #include <netinet/udp.h>
 #include <string.h> // for memset
 #include <iostream>
+#include <poll.h>
 #include "outgauge.h"
 
 static int g_socket;
@@ -27,7 +28,7 @@ void open_socket()
     int s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (s == -1)
     {
-        std::cout << "Error creating server socket!\n";
+        std::cerr << "Error creating server socket!\n";
     }
 
     // We bind it here
@@ -39,7 +40,7 @@ void open_socket()
 
     if (bind(s, (struct sockaddr*)&si_server, sizeof(si_server)) == -1)
     {
-        std::cout << "Error binding server socket!\n";
+        std::cerr << "Error binding server socket!\n";
     }
 
     g_socket = s;
@@ -47,21 +48,38 @@ void open_socket()
 
 Outgauge_t* receive_data()
 {
+    struct pollfd pfd {};
+    pfd.fd = g_socket;
+    pfd.events = POLLIN;
+
+    // Wait for g_socket to receive data
+    // timeout after 100 ms
+    // If no data received - return NULL.
+    if (poll(&pfd, 1, 100) == 0)
+    {
+        return NULL;
+    }
+
+    if ((pfd.revents & POLLIN) == 0)
+    {
+        std::cout << "Some socket event, but no data to read\n";
+        return NULL;
+    }
+
     struct sockaddr_in si_other {};
 
     long int recv_len;
     unsigned int slen;
     if ((recv_len = recvfrom(g_socket, buf, buffer_length, 0, (struct sockaddr*)&si_other, &slen)) == -1)
     {
-        std::cout << "Error reading socket.\n";
+        std::cerr << "Error reading socket.\n";
         open_socket();
     }
 
     if (recv_len != buffer_length)
     {
-        std::cout << "Received malformed data!\n";
-        std::cout << "Returning previous entry\n";
-        return (Outgauge_t*)buf;
+        std::cerr << "Received malformed data!\n";
+        return NULL;
     }
 
     Outgauge_t* data = (Outgauge_t*)buf;

@@ -19,7 +19,7 @@ bool open_wheel_hid()
     g_wheel_handle = hid_open(0x46d, 0xc24f, NULL);
     if (!g_wheel_handle)
     {
-        std::cout << "Unable to open device!\n";
+        std::cerr << "Unable to open device!\n";
         hid_exit();
         return false;
     }
@@ -52,7 +52,7 @@ bool change_state(unsigned char desired_state)
 
     if (res != LED_SUCCESS)
     {
-        std::cout << "Error in setting LED status: " << res << std::endl;
+        std::cerr << "Error in setting LED status: " << res << std::endl;
         return false;
     }
 
