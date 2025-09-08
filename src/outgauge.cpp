@@ -6,6 +6,7 @@
 #include <string.h> // for memset
 #include <iostream>
 #include <poll.h>
+#include <unistd.h>
 #include "outgauge.h"
 
 // Server socket
